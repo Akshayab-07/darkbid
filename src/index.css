@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Backgrounds */
+    --bg-base:        #080B14;   /* Deepest background — midnight blue-black */
+    --bg-surface:     #0D1120;   /* Cards, panels */
+    --bg-elevated:    #121829;   /* Hover states, modals */
+    --bg-overlay:     #1A2236;   /* Tooltips, dropdowns */
+
+    /* Borders */
+    --border-subtle:  #1E2A42;   /* Default card borders */
+    --border-default: #2A3A5C;   /* Active borders */
+    --border-strong:  #3D5080;   /* Focus rings */
+    
+    /* shadcn defaults - slate dark */
+    --background: 226 43% 5%;
+    --foreground: 225 100% 95%;
+    --card: 227 42% 9%;
+    --card-foreground: 225 100% 95%;
+    --popover: 227 42% 9%;
+    --popover-foreground: 225 100% 95%;
+    --primary: 259 45% 55%;
+    --primary-foreground: 225 100% 95%;
+    --secondary: 226 31% 25%;
+    --secondary-foreground: 225 100% 95%;
+    --muted: 226 31% 25%;
+    --muted-foreground: 221 24% 65%;
+    --accent: 226 31% 25%;
+    --accent-foreground: 225 100% 95%;
+    --destructive: 0 91% 71%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 226 31% 25%;
+    --input: 226 31% 25%;
+    --ring: 259 45% 55%;
+    --radius: 0.5rem;
+
+    /* Primary — Violet */
+    --violet-50:      #F0EBFF;
+    --violet-200:     #C4B0FF;
+    --violet-400:     #9D7FEA;
+    --violet-500:     #7C5CBF;   /* Primary buttons */
+    --violet-600:     #6344A8;   /* Button hover */
+    --violet-900:     #1E1440;   /* Subtle violet tints on bg */
+
+    /* Accent — Soft Cyan (for highlights, not primary) */
+    --cyan-300:       #67E8F9;
+    --cyan-400:       #22D3EE;
+    --cyan-900:       #0A2840;
+
+    /* Semantic */
+    --success:        #34D399;   /* Winner, confirmed, valid */
+    --success-bg:     #0A2D22;
+    --warning:        #FBBF24;   /* Countdown warning < 30s */
+    --warning-bg:     #2D1F0A;
+    --error:          #F87171;   /* Invalid bid, error */
+    --error-bg:       #2D0A0A;
+    --pending:        #A78BFA;   /* Sealed / waiting */
+    --pending-bg:     #1A1040;
+
+    /* Text */
+    --text-primary:   #E8EEFF;   /* Main headings */
+    --text-secondary: #94A3C0;   /* Body, descriptions */
+    --text-muted:     #4A5A7A;   /* Labels, placeholders */
+    --text-disabled:  #2A3A5A;
+
+    /* Special */
+    --gradient-primary: linear-gradient(135deg, #7C5CBF 0%, #4A3A8A 100%);
+    --gradient-surface: linear-gradient(180deg, #0D1120 0%, #080B14 100%);
+    --glow-violet:    0 0 24px rgba(124, 92, 191, 0.25);
+    --glow-success:   0 0 24px rgba(52, 211, 153, 0.2);
+
+    /* Typography Scale */
+    --font-family: 'Inter', -apple-system, sans-serif;
+    --text-display:  clamp(36px, 5vw, 64px);
+    --text-h1:       clamp(24px, 3vw, 40px);
+    --text-h2:       clamp(18px, 2vw, 28px);
+    --text-h3:       18px;
+    --text-body-lg:  16px;
+    --text-body:     14px;
+    --text-small:    12px;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: var(--font-family);
+    background-color: var(--bg-base);
+    color: var(--text-secondary);
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    transition: color 0.2s ease;
+  }
+  
+  h1 { font-size: var(--text-h1); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; color: var(--text-primary); }
+  h2 { font-size: var(--text-h2); font-weight: 600; letter-spacing: -0.015em; color: var(--text-primary); }
+  h3 { font-size: var(--text-h3); font-weight: 600; letter-spacing: -0.01em; color: var(--text-primary); }
+}
+
+@layer utilities {
+  .text-display {
+    font-size: var(--text-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
