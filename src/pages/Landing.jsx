@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { LockKeyhole, ShieldCheck, Trophy, Clock, Wallet, Key } from 'lucide-react'
+import { LockKeyhole, ShieldCheck, Trophy, Clock, Wallet, Key, AlertTriangle, X, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { PageTransition } from '@/components/shared/PageTransition'
 import { AuctionCard } from '@/components/auction/AuctionCard'
@@ -52,20 +52,37 @@ function ScrollReveal({ children, delay = 0, direction = 'up', className = '' })
 }
 
 /* ── Data ──────────────────────────────────────────────────── */
-const problems = [
-  '❌ Bots see your bid instantly',
-  '❌ Front-runners steal your gains',
-  '❌ Winners forced to over-pay',
-  '❌ Centralized, trust-required',
-  '❌ No privacy guarantee',
-]
-
-const solutions = [
-  '✅ Bids hidden until reveal phase',
-  '✅ ZK proofs prevent all cheating',
-  '✅ Fair winner selection by math',
-  '✅ 100% on-chain, fully trustless',
-  '✅ Cryptographic privacy guarantee',
+const features = [
+  {
+    icon: EyeOff,
+    title: 'Absolute Secrecy',
+    desc: 'Bids remain cryptographically hidden until the reveal phase. Front-running is mathematically impossible.',
+    colSpan: 'md:col-span-2'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Zero-Knowledge Proofs',
+    desc: 'Verify bid validity on-chain without exposing any underlying transaction data.',
+    colSpan: 'md:col-span-1'
+  },
+  {
+    icon: Scale,
+    title: 'Mathematical Fairness',
+    desc: 'Winner selection is guaranteed by cryptography, eliminating trust from the equation completely.',
+    colSpan: 'md:col-span-1'
+  },
+  {
+    icon: Cpu,
+    title: '100% On-Chain',
+    desc: 'A fully decentralized protocol. No off-chain dependencies, no trusted third parties.',
+    colSpan: 'md:col-span-1'
+  },
+  {
+    icon: Fingerprint,
+    title: 'Privacy by Default',
+    desc: 'Your identity, wallet footprint, and bidding strategies are protected at the protocol level.',
+    colSpan: 'md:col-span-1'
+  }
 ]
 
 const steps = [
@@ -83,10 +100,28 @@ const stats = [
 ]
 
 const demoAuctions = [
-  { id: '1', name: 'PhantomToken', symbol: '$PHNTM', reserve: '100.00', time: '00:45', bids: '21', status: 'Live' },
-  { id: '2', name: 'ZeroCoin',     symbol: '$ZERO',  reserve: '50.00',  time: '02:15', bids: '14', status: 'Live' },
-  { id: '3', name: 'Eclipse',      symbol: '$ECL',   reserve: '500.00', time: '14:00', bids: '5',  status: 'Live' },
+  { id: '1', name: 'PhantomToken', symbol: '$PHNTM', reserve: '100.00', endTimestamp: Date.now() + 45000, bids: '21', status: 'Live' },
+  { id: '2', name: 'ZeroCoin',     symbol: '$ZERO',  reserve: '50.00',  endTimestamp: Date.now() + 135000, bids: '14', status: 'Live' },
+  { id: '3', name: 'Eclipse',      symbol: '$ECL',   reserve: '500.00', endTimestamp: Date.now() + 14 * 3600000, bids: '5',  status: 'Live' },
 ]
+
+function StatCard({ s, i }) {
+  const [ref, val] = useCountUp(s.raw)
+  return (
+    <ScrollReveal delay={i * 0.12}>
+      <div
+        ref={ref}
+        className="p-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-center
+          hover:border-[var(--violet-500)] hover:shadow-glow-v transition-all duration-300"
+      >
+        <div className="font-display text-5xl font-bold text-white mb-2">
+          {s.prefix}{val}{s.suffix}
+        </div>
+        <div className="text-sm text-[var(--text-muted)] uppercase tracking-wider">{s.label}</div>
+      </div>
+    </ScrollReveal>
+  )
+}
 
 /* ── Landing ───────────────────────────────────────────────── */
 export default function Landing() {
@@ -119,9 +154,9 @@ export default function Landing() {
             className="mb-8"
           >
             <div className="relative inline-flex items-center justify-center w-20 h-20">
-              <div className="absolute inset-0 rounded-full bg-[rgba(124,58,237,0.15)] animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-[rgba(124,58,237,0.15)]" />
               <LockKeyhole
-                className="animate-spin-slow text-[var(--violet-400)]"
+                className="text-[var(--violet-400)]"
                 style={{ width: 40, height: 40 }}
               />
             </div>
@@ -173,7 +208,7 @@ export default function Landing() {
             <Link
               to={ROUTES.DASHBOARD}
               className="relative px-8 py-4 bg-[var(--violet-500)] text-white font-bold rounded-xl text-base overflow-hidden group
-                shadow-[0_0_32px_rgba(124,58,237,0.3)] hover:shadow-[0_0_48px_rgba(124,58,237,0.55)]
+                shadow-[0_0_32px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.2)]
                 transition-all duration-300 hover:-translate-y-0.5"
             >
               <span className="relative z-10">🚀 Launch App</span>
@@ -205,58 +240,32 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION 2 — PROBLEM / SOLUTION
+          SECTION 2 — THE PROTOCOL
       ═══════════════════════════════════════════════════════ */}
       <section className="py-24 px-6 max-w-6xl mx-auto">
         <ScrollReveal className="text-center mb-16">
-          <span className="text-xs tracking-[0.25em] uppercase text-[var(--violet-400)] font-semibold mb-3 block">The Problem</span>
-          <h2 className="text-h2">Why Traditional Auctions Are Broken</h2>
+          <span className="text-xs tracking-[0.25em] uppercase text-[var(--violet-400)] font-semibold mb-3 block">DarkBid Protocol</span>
+          <h2 className="text-h2">Fair Launches, Guaranteed by Math</h2>
+          <p className="text-[var(--text-secondary)] mt-4 max-w-2xl mx-auto text-lg">
+            We've eliminated the trusted third party. DarkBid uses zero-knowledge cryptography to ensure every auction is provably fair and completely blind to bots.
+          </p>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Without DarkBid */}
-          <ScrollReveal direction="left" delay={0.1}>
-            <div className="h-full p-8 rounded-2xl border border-[rgba(255,59,92,0.25)] bg-[rgba(255,59,92,0.04)] flex flex-col gap-4">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">🚨</span>
-                <h3 className="text-lg font-bold text-[var(--error)]">Traditional Auctions</h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          {features.map((f, i) => (
+            <ScrollReveal key={i} delay={i * 0.1} className={f.colSpan}>
+              <div className="h-full p-8 md:p-10 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col group hover:border-[var(--violet-500)]/40 hover:shadow-[0_0_30px_rgba(124,58,237,0.1)] transition-all duration-500 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--violet-500)]/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[var(--violet-500)]/15 transition-colors duration-500 pointer-events-none" />
+                
+                <div className="w-14 h-14 rounded-2xl bg-[var(--bg-elevated)] flex items-center justify-center border border-[var(--border-default)] group-hover:border-[var(--violet-500)]/30 group-hover:bg-[var(--violet-500)]/10 transition-colors duration-300 mb-8 relative z-10">
+                  <f.icon className="w-7 h-7 text-[var(--violet-400)] group-hover:text-[var(--violet-300)] transition-colors" />
+                </div>
+                
+                <h3 className="text-2xl font-display font-bold text-white mb-3 relative z-10">{f.title}</h3>
+                <p className="text-[var(--text-secondary)] leading-relaxed relative z-10">{f.desc}</p>
               </div>
-              {problems.map((p, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07 + 0.2 }}
-                  className="flex items-center gap-3 py-2 border-b border-[rgba(255,59,92,0.1)] last:border-0"
-                >
-                  <span className="text-sm text-[var(--text-secondary)]">{p}</span>
-                </motion.div>
-              ))}
-            </div>
-          </ScrollReveal>
-
-          {/* With DarkBid */}
-          <ScrollReveal direction="right" delay={0.15}>
-            <div className="h-full p-8 rounded-2xl border border-[rgba(6,255,165,0.25)] bg-[rgba(6,255,165,0.04)] flex flex-col gap-4">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">🔐</span>
-                <h3 className="text-lg font-bold text-[var(--success)]">DarkBid Protocol</h3>
-              </div>
-              {solutions.map((s, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07 + 0.2 }}
-                  className="flex items-center gap-3 py-2 border-b border-[rgba(6,255,165,0.1)] last:border-0"
-                >
-                  <span className="text-sm text-[var(--text-secondary)]">{s}</span>
-                </motion.div>
-              ))}
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          ))}
         </div>
       </section>
 
@@ -295,12 +304,12 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22,1,0.36,1] }}
                 className="relative flex flex-col items-center text-center p-6 rounded-2xl border border-[var(--border-subtle)]
-                  bg-[var(--bg-elevated)] hover:border-[var(--violet-500)] hover:shadow-glow-v transition-all duration-300 group"
+                  bg-[var(--bg-elevated)] hover:border-[var(--violet-500)] hover:shadow-[0_4px_16px_rgba(124,58,237,0.15)] transition-all duration-300 group"
               >
                 {/* Icon */}
                 <div className="relative mb-4 w-16 h-16 flex items-center justify-center rounded-xl
-                  bg-gradient-to-br from-[rgba(124,58,237,0.2)] to-[rgba(124,58,237,0.05)]
-                  border border-[rgba(124,58,237,0.25)] group-hover:scale-110 transition-transform duration-300">
+                  bg-[rgba(124,58,237,0.1)]
+                  border border-[rgba(124,58,237,0.25)] transition-transform duration-300">
                   <step.icon className="w-7 h-7 text-[var(--violet-400)]" />
                 </div>
                 <span className="font-mono text-xs text-[var(--text-muted)] mb-1">{step.n}</span>
@@ -317,23 +326,9 @@ export default function Landing() {
       ═══════════════════════════════════════════════════════ */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid md:grid-cols-3 gap-6">
-          {stats.map((s, i) => {
-            const [ref, val] = useCountUp(s.raw)
-            return (
-              <ScrollReveal key={i} delay={i * 0.12}>
-                <div
-                  ref={ref}
-                  className="p-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-center
-                    hover:border-[var(--violet-500)] hover:shadow-glow-v transition-all duration-300"
-                >
-                  <div className="font-display text-5xl font-bold text-white mb-2">
-                    {s.prefix}{val}{s.suffix}
-                  </div>
-                  <div className="text-sm text-[var(--text-muted)] uppercase tracking-wider">{s.label}</div>
-                </div>
-              </ScrollReveal>
-            )
-          })}
+          {stats.map((s, i) => (
+            <StatCard key={i} s={s} i={i} />
+          ))}
         </div>
       </section>
 

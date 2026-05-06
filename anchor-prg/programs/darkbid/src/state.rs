@@ -8,6 +8,9 @@ pub struct Auction {
     pub is_finalized: bool,
     pub winner: Option<Pubkey>,
     pub bump: u8,
+    pub mint: Pubkey,           // SPL token mint address
+    pub token_supply: u64,      // Total tokens to distribute
+    pub tokens_claimed: bool,   // Track if winner has claimed
 }
 
 #[account]

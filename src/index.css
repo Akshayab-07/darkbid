@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -26,9 +26,9 @@
     --violet-900:     #2E1065;
 
     /* Semantic */
-    --success:        #06FFA5;
+    --success:        #1D9E75;
     --success-bg:     #001A0F;
-    --warning:        #FFA500;
+    --warning:        #D97706;
     --warning-bg:     #1A0F00;
     --error:          #FF3B5C;
     --error-bg:       #1A000A;
@@ -44,9 +44,9 @@
     /* Gradients & Glows */
     --gradient-primary: linear-gradient(135deg, #7C3AED 0%, #4A1B8A 100%);
     --gradient-surface: linear-gradient(180deg, #12121A 0%, #0A0A0F 100%);
-    --glow-violet:    0 0 32px rgba(124, 58, 237, 0.25);
-    --glow-green:     0 0 32px rgba(6, 255, 165, 0.2);
-    --glow-amber:     0 0 32px rgba(255, 165, 0, 0.2);
+    --glow-violet:    0 0 16px rgba(124, 58, 237, 0.12);
+    --glow-green:     0 0 16px rgba(29, 158, 117, 0.12);
+    --glow-amber:     0 0 16px rgba(217, 119, 6, 0.12);
 
     /* shadcn compatibility */
     --background: 240 33% 4%;
@@ -71,7 +71,7 @@
     --radius: 0.75rem;
 
     /* Typography */
-    --font-display: 'Space Grotesk', -apple-system, sans-serif;
+    --font-display: 'Syne', -apple-system, sans-serif;
     --font-body:    'Inter', -apple-system, sans-serif;
     --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
@@ -166,13 +166,13 @@
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 16px rgba(124,58,237,0.3); }
-  50%       { box-shadow: 0 0 32px rgba(124,58,237,0.6), 0 0 64px rgba(124,58,237,0.2); }
+  0%, 100% { box-shadow: 0 0 8px rgba(124,58,237,0.15); }
+  50%       { box-shadow: 0 0 16px rgba(124,58,237,0.3), 0 0 32px rgba(124,58,237,0.1); }
 }
 
 @keyframes glow-green-pulse {
-  0%, 100% { box-shadow: 0 0 16px rgba(6,255,165,0.3); }
-  50%       { box-shadow: 0 0 32px rgba(6,255,165,0.6), 0 0 64px rgba(6,255,165,0.2); }
+  0%, 100% { box-shadow: 0 0 8px rgba(29,158,117,0.15); }
+  50%       { box-shadow: 0 0 16px rgba(29,158,117,0.3), 0 0 32px rgba(29,158,117,0.1); }
 }
 
 @keyframes float-up {
@@ -251,13 +251,13 @@
 
 /* ─── NEW COMPONENT EFFECTS (from HTML designs) ─────────── */
 .glow-effect {
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.2);
 }
 .text-glow {
-  text-shadow: 0 0 20px rgba(124, 58, 237, 0.8), 0 0 40px rgba(124, 58, 237, 0.4);
+  text-shadow: 0 0 20px rgba(124, 58, 237, 0.8);
 }
 .cosmic-glow {
-  box-shadow: 0 0 60px rgba(124, 58, 237, 0.2), inset 0 0 30px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 24px rgba(124, 58, 237, 0.08), inset 0 0 30px rgba(124, 58, 237, 0.1);
 }
 @keyframes dataStream {
   0% { background-position: -200% 0; }
@@ -314,5 +314,5 @@
   100% { transform: rotate(360deg) scale(1); }
 }
 .zk-geo-1 { border: 2px solid rgba(124, 58, 237, 0.4); animation: geo-spin 8s linear infinite; }
-.zk-geo-2 { border: 2px solid rgba(6, 255, 165, 0.2); animation: geo-spin 12s linear infinite reverse; }
+.zk-geo-2 { border: 2px solid rgba(29, 158, 117, 0.2); animation: geo-spin 12s linear infinite reverse; }
 .zk-geo-3 { border: 2px dashed rgba(210, 187, 255, 0.5); animation: geo-spin 20s linear infinite; }

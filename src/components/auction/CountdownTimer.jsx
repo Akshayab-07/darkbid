@@ -7,8 +7,8 @@ export function CountdownTimer({ timeLeft, state, totalDuration, bids = 0 }) {
 
   const progress = totalDuration > 0 ? (timeLeft / totalDuration) * 100 : 0
   const timerColor = timeLeft < 30 ? 'text-[var(--error)]' : timeLeft < 120 ? 'text-[var(--warning)]' : 'text-white'
-  const barColor   = timeLeft < 30 ? '#FF3B5C' : timeLeft < 120 ? '#FFA500' : '#06FFA5'
-  const glowColor  = timeLeft < 30 ? 'rgba(255,59,92,1)' : timeLeft < 120 ? 'rgba(255,165,0,1)' : 'rgba(210,187,255,1)'
+  const barColor   = timeLeft < 30 ? 'var(--error)' : timeLeft < 120 ? 'var(--warning)' : 'var(--success)'
+  const glowColor  = timeLeft < 30 ? 'rgba(255,59,92,1)' : timeLeft < 120 ? 'rgba(217,119,6,1)' : 'rgba(210,187,255,1)'
 
   const display = `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`
 
@@ -17,9 +17,9 @@ export function CountdownTimer({ timeLeft, state, totalDuration, bids = 0 }) {
       
       {/* Black Hole / Radar Effect */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
-        <div className="w-[340px] h-[340px] rounded-full border border-[rgba(124,58,237,0.2)] animate-[spin_12s_linear_infinite]" />
-        <div className="absolute w-[280px] h-[280px] rounded-full border border-[rgba(124,58,237,0.3)] border-dashed animate-[spin_18s_linear_infinite_reverse]" />
-        <div className="absolute w-[220px] h-[220px] bg-black rounded-full shadow-[0_0_80px_rgba(124,58,237,0.8),inset_0_0_20px_rgba(0,0,0,1)] z-0" />
+        <div className="w-[340px] h-[340px] rounded-full border border-[rgba(124,58,237,0.08)] animate-[spin_12s_linear_infinite]" />
+        <div className="absolute w-[280px] h-[280px] rounded-full border border-[rgba(124,58,237,0.12)] border-dashed animate-[spin_18s_linear_infinite_reverse]" />
+        <div className="absolute w-[220px] h-[220px] bg-black rounded-full shadow-[0_0_32px_rgba(124,58,237,0.32),inset_0_0_20px_rgba(0,0,0,1)] z-0" />
       </div>
 
       <div className="text-center z-10 w-full relative">

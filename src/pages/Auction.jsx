@@ -102,6 +102,16 @@ export function Auction() {
             </div>
           )}
 
+          {state === AUCTION_STATES.CALCULATING && (
+            <div className="text-center mb-16 w-full max-w-3xl mx-auto flex flex-col items-center">
+              <h1 className="text-[48px] font-display font-bold text-white flex items-center justify-center gap-4 mb-4 drop-shadow-2xl tracking-tighter">
+                <div className="w-12 h-12 border-4 border-[var(--violet-400)] border-t-transparent rounded-full animate-spin glow-effect" />
+                Tallying results...
+              </h1>
+              <p className="text-xl text-[var(--text-secondary)]">ZK proofs being verified on-chain</p>
+            </div>
+          )}
+
           {/* Grid Layout Container */}
           <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-8">
             
@@ -110,7 +120,7 @@ export function Auction() {
                 <div className="md:col-span-5 h-full">
                   <CountdownTimer 
                     timeLeft={timeLeft} 
-                    totalDuration={3600} 
+                    totalDuration={Math.floor((DUMMY_AUCTION.endTime - DUMMY_AUCTION.startTime) / 1000)} 
                     bids={DUMMY_AUCTION.bidsCount} 
                   />
                 </div>
@@ -122,6 +132,26 @@ export function Auction() {
 
             {state === AUCTION_STATES.REVEAL && (
               <RevealPanel />
+            )}
+
+            {state === AUCTION_STATES.CALCULATING && (
+              <div className="md:col-span-12 w-full max-w-4xl mx-auto flex flex-col items-center justify-center py-20 min-h-[400px]">
+                <div className="relative w-32 h-32 mb-8 flex items-center justify-center">
+                  <div className="absolute w-full h-full rounded-full zk-geo-1" />
+                  <div className="absolute w-[80%] h-[80%] rounded-sm zk-geo-2" />
+                  <div className="absolute w-[60%] h-[60%] rounded-full zk-geo-3" />
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-12 h-12 bg-[var(--violet-900)]/50 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(124,58,237,0.5)] border border-[var(--violet-500)]/40">
+                      <Unlock className="w-6 h-6 text-[var(--violet-400)]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full max-w-[240px] h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div className="h-full bg-gradient-to-r from-[var(--violet-600)] to-[var(--violet-400)] rounded-full relative w-full">
+                    <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                  </div>
+                </div>
+              </div>
             )}
 
             {state === AUCTION_STATES.CLOSED && (

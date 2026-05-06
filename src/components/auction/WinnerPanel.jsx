@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, ExternalLink, Coins, RotateCcw, Receipt } from 'lucide-react'
+import { Trophy, ExternalLink, Coins, RotateCcw, Receipt, Loader } from 'lucide-react'
 import { ConfettiBurst } from '@/components/shared/ConfettiBurst'
+import { useClaimToken } from '@/hooks/useClaimToken'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const leaderboard = [
   { rank: 1, wallet: '6DiY…3bX', bid: 0.75, result: 'WINNER',   won: true },
@@ -13,8 +15,11 @@ const leaderboard = [
 
 const rankEmojis = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣']
 
-export function WinnerPanel({ isWinner }) {
+export function WinnerPanel({ isWinner, auctionAddress = null, authorityAddress = null, programId = null }) {
   const confettiRef = useRef(null)
+  const { claimToken, loading: claimLoading, txSignature, error: claimError } = useClaimToken()
+  const { publicKey } = useWallet()
+  const [claimed, setClaimed] = useState(false)
 
   // Fire confetti when component mounts if user is winner
   useEffect(() => {
@@ -23,6 +28,18 @@ export function WinnerPanel({ isWinner }) {
       return () => clearTimeout(t)
     }
   }, [isWinner])
+
+  const handleClaimTokens = async () => {
+    if (!programId || !auctionAddress || !authorityAddress) {
+      console.error('Missing required addresses for claiming tokens')
+      return
+    }
+
+    await claimToken(programId, auctionAddress, authorityAddress)
+    if (txSignature) {
+      setClaimed(true)
+    }
+  }
 
   return (
     <>
@@ -38,13 +55,13 @@ export function WinnerPanel({ isWinner }) {
           transition={{ type: 'spring', stiffness: 240, damping: 18, delay: 0.1 }}
           className={`p-8 rounded-2xl border text-center flex flex-col items-center gap-4
             ${isWinner
-              ? 'bg-[rgba(6,255,165,0.05)] border-[rgba(6,255,165,0.35)] shadow-[0_0_48px_rgba(6,255,165,0.12)]'
+              ? 'bg-[rgba(29,158,117,0.05)] border-[rgba(29,158,117,0.35)] shadow-[0_0_24px_rgba(29,158,117,0.12)]'
               : 'bg-[var(--bg-surface)] border-[var(--border-default)]'
             }`}
         >
           <div className={`w-20 h-20 rounded-full flex items-center justify-center text-4xl
             ${isWinner
-              ? 'bg-[rgba(6,255,165,0.12)] border-2 border-[rgba(6,255,165,0.4)]'
+              ? 'bg-[rgba(29,158,117,0.12)] border-2 border-[rgba(29,158,117,0.4)]'
               : 'bg-[var(--bg-elevated)] border border-[var(--border-default)]'
             }`}
           >
@@ -53,11 +70,11 @@ export function WinnerPanel({ isWinner }) {
 
           <div>
             <h2 className="text-2xl font-display font-bold text-white mb-1">
-              {isWinner ? '🎉 You Won the Auction!' : '🏁 Auction Complete'}
+              {isWinner ? (claimed ? '✅ Tokens Claimed!' : '🎉 You Won the Auction!') : '🏁 Auction Complete'}
             </h2>
             <p className="text-[var(--text-secondary)]">
               {isWinner
-                ? 'Congratulations! Your tokens are ready to be claimed.'
+                ? (claimed ? 'Your tokens have been successfully transferred to your wallet.' : 'Congratulations! Your tokens are ready to be claimed.')
                 : 'The winning bid was ◎ 0.75 SOL. Your bid has been automatically refunded.'}
             </p>
           </div>
@@ -65,11 +82,27 @@ export function WinnerPanel({ isWinner }) {
           {/* Winner address chip */}
           <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-default)] bg-[var(--bg-elevated)]">
             <span className="font-mono text-xs text-[var(--text-muted)]">Winner:</span>
-            <span className="font-mono text-xs text-white">6DiY…3bX</span>
-            <a href="https://explorer.solana.com" target="_blank" rel="noreferrer">
-              <ExternalLink className="w-3 h-3 text-[var(--text-muted)] hover:text-white transition-colors" />
-            </a>
+            <span className="font-mono text-xs text-white">
+              {publicKey ? `${publicKey.toString().slice(0, 4)}…${publicKey.toString().slice(-4)}` : '6DiY…3bX'}
+            </span>
+            {txSignature && (
+              <a 
+                href={`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:opacity-75 transition-opacity"
+              >
+                <ExternalLink className="w-3 h-3 text-[var(--text-muted)] hover:text-white transition-colors" />
+              </a>
+            )}
           </div>
+
+          {/* Error message if claim failed */}
+          {claimError && (
+            <div className="w-full px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+              {claimError}
+            </div>
+          )}
         </motion.div>
 
         {/* ── Leaderboard ── */}
@@ -93,17 +126,17 @@ export function WinnerPanel({ isWinner }) {
               transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
               className={`grid grid-cols-4 items-center px-3 py-3.5 rounded-xl border font-mono text-sm
                 ${row.won
-                  ? 'bg-[rgba(6,255,165,0.07)] border-[rgba(6,255,165,0.3)] text-[var(--success)]'
+                  ? 'bg-[rgba(29,158,117,0.07)] border-[rgba(29,158,117,0.3)] text-[var(--success)]'
                   : 'bg-[var(--bg-elevated)] border-[var(--border-subtle)] text-[var(--text-secondary)]'
                 }
-                ${isWinner && row.won ? 'ring-1 ring-[rgba(6,255,165,0.5)]' : ''}
+                ${isWinner && row.won ? 'ring-1 ring-[rgba(29,158,117,0.5)]' : ''}
               `}
             >
               <span className="font-bold text-base">{rankEmojis[i]}</span>
               <span className={row.won ? 'text-[var(--success)] font-bold' : ''}>
                 {row.wallet}
                 {isWinner && row.won && (
-                  <span className="ml-1.5 text-[10px] bg-[rgba(6,255,165,0.2)] text-[var(--success)] px-1.5 py-0.5 rounded-full font-sans font-bold">YOU</span>
+                  <span className="ml-1.5 text-[10px] bg-[rgba(29,158,117,0.2)] text-[var(--success)] px-1.5 py-0.5 rounded-full font-sans font-bold">YOU</span>
                 )}
               </span>
               <span className="text-right">◎ {row.bid.toFixed(2)}</span>
@@ -122,14 +155,33 @@ export function WinnerPanel({ isWinner }) {
           className="grid grid-cols-1 sm:grid-cols-3 gap-3"
         >
           {isWinner ? (
-            <button className="sm:col-span-3 py-4 rounded-xl font-display font-bold text-base flex items-center justify-center gap-2
-              bg-[var(--success)] text-[#001A0F] animate-glow-green hover:-translate-y-0.5 transition-all">
-              <Coins className="w-5 h-5" /> 💰 Claim Tokens
-            </button>
+            claimed ? (
+              <div className="sm:col-span-3 py-4 rounded-xl font-display font-bold text-base flex items-center justify-center gap-2
+                bg-[rgba(29,158,117,0.15)] text-[var(--success)] border border-[var(--success)]/30">
+                ✅ Tokens Claimed Successfully
+              </div>
+            ) : (
+              <button
+                onClick={handleClaimTokens}
+                disabled={claimLoading}
+                className="sm:col-span-3 py-4 rounded-xl font-display font-bold text-base flex items-center justify-center gap-2
+                  bg-[var(--success)] text-[#001A0F] animate-glow-green hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {claimLoading ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin" /> Claiming...
+                  </>
+                ) : (
+                  <>
+                    <Coins className="w-5 h-5" /> 💰 Claim Tokens
+                  </>
+                )}
+              </button>
+            )
           ) : (
             <>
               <button className="py-3.5 rounded-xl font-semibold border-2 border-[var(--success)] text-[var(--success)]
-                hover:bg-[rgba(6,255,165,0.08)] transition-all flex items-center justify-center gap-2 col-span-2">
+                hover:bg-[rgba(29,158,117,0.08)] transition-all flex items-center justify-center gap-2 col-span-2">
                 <RotateCcw className="w-4 h-4" /> ↩️ Get Refund
               </button>
               <button className="py-3.5 rounded-xl font-semibold border border-[var(--border-default)] text-[var(--text-secondary)]

@@ -3,9 +3,8 @@ import { AnchorProvider, Program } from '@coral-xyz/anchor'
 import { PublicKey } from '@solana/web3.js'
 import IDL from '../lib/darkbid.json'
 
-// Dev 2 gives you this after deploying
-// This is a placeholder - will be replaced with actual Program ID
-const PROGRAM_ID = new PublicKey('DarkB1dXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+// Darkbid Program ID on Devnet
+const PROGRAM_ID = new PublicKey('7YWfupxWKmgekRxzrWUUgoWEGSoGS2kz9nyaEbzKHqFK')
 
 export function useDarkBidProgram() {
   const { connection } = useConnection()

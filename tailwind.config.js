@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Space Grotesk', 'sans-serif'],
+        display: ['Syne', 'sans-serif'],
         body:    ['Inter', 'sans-serif'],
         mono:    ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
@@ -57,10 +57,10 @@ export default {
         'hot-pink':   '#FF3B5C',
       },
       boxShadow: {
-        'glow-v':    '0 0 32px rgba(124,58,237,0.25)',
-        'glow-v-lg': '0 0 64px rgba(124,58,237,0.4)',
-        'glow-g':    '0 0 32px rgba(6,255,165,0.2)',
-        'glow-a':    '0 0 32px rgba(255,165,0,0.2)',
+        'glow-v':    '0 0 16px rgba(124,58,237,0.12)',
+        'glow-v-lg': '0 0 24px rgba(124,58,237,0.16)',
+        'glow-g':    '0 0 16px rgba(29,158,117,0.12)',
+        'glow-a':    '0 0 16px rgba(217,119,6,0.12)',
         'card':      '0 4px 24px rgba(0,0,0,0.4)',
         'modal':     '0 16px 64px rgba(0,0,0,0.5)',
         'raised':    '0 8px 32px rgba(0,0,0,0.35)',

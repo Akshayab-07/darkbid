@@ -7,21 +7,21 @@ import { Filter } from 'lucide-react'
 const FILTERS = ['All', 'Live', 'Revealing', 'Ended']
 
 const FILTER_COLORS = {
-  Live:      'text-[#06FFA5]',
-  Revealing: 'text-[#FFA500]',
-  Ended:     'text-[#8B8FA8]',
+  Live:      'text-[var(--success)]',
+  Revealing: 'text-[var(--warning)]',
+  Ended:     'text-[var(--text-secondary)]',
   All:       'text-white',
 }
 
 const auctions = [
-  { id: '1', name: 'PhantomToken', symbol: '$PHNTM', reserve: '100.00', time: '00:45', bids: '21', status: 'Live' },
-  { id: '2', name: 'ZeroCoin',     symbol: '$ZERO',  reserve: '50.00',  time: '02:15', bids: '14', status: 'Live' },
-  { id: '3', name: 'Eclipse',      symbol: '$ECL',   reserve: '500.00', time: '14:00', bids: '5',  status: 'Live' },
-  { id: '4', name: 'Nebula',       symbol: '$NBLA',  reserve: '25.00',  time: '08:32', bids: '9',  status: 'Revealing' },
-  { id: '5', name: 'Axiom',        symbol: '$AX',    reserve: '150.00', time: '03:48', bids: '17', status: 'Revealing' },
-  { id: '6', name: 'Stardust',     symbol: '$DUST',  reserve: '10.00',  time: 'Ended', bids: '145',status: 'Ended' },
-  { id: '7', name: 'SolFlame',     symbol: '$FLAME', reserve: '75.00',  time: 'Ended', bids: '88', status: 'Ended' },
-  { id: '8', name: 'VoidMark',     symbol: '$VOID',  reserve: '200.00', time: 'Ended', bids: '32', status: 'Ended' },
+  { id: '1', name: 'PhantomToken', symbol: '$PHNTM', reserve: '100.00', endTimestamp: Date.now() + 45000, bids: '21', status: 'Live' },
+  { id: '2', name: 'ZeroCoin',     symbol: '$ZERO',  reserve: '50.00',  endTimestamp: Date.now() + 135000, bids: '14', status: 'Live' },
+  { id: '3', name: 'Eclipse',      symbol: '$ECL',   reserve: '500.00', endTimestamp: Date.now() + 14 * 3600000, bids: '5',  status: 'Live' },
+  { id: '4', name: 'Nebula',       symbol: '$NBLA',  reserve: '25.00',  endTimestamp: Date.now() - 60000, bids: '9',  status: 'Revealing' },
+  { id: '5', name: 'Axiom',        symbol: '$AX',    reserve: '150.00', endTimestamp: Date.now() - 120000, bids: '17', status: 'Revealing' },
+  { id: '6', name: 'Stardust',     symbol: '$DUST',  reserve: '10.00',  endTimestamp: Date.now() - 86400000, bids: '145',status: 'Ended' },
+  { id: '7', name: 'SolFlame',     symbol: '$FLAME', reserve: '75.00',  endTimestamp: Date.now() - 172800000, bids: '88', status: 'Ended' },
+  { id: '8', name: 'VoidMark',     symbol: '$VOID',  reserve: '200.00', endTimestamp: Date.now() - 259200000, bids: '32', status: 'Ended' },
 ]
 
 const cardVariants = {
@@ -71,7 +71,7 @@ export default function Dashboard() {
             <span className={filter === f && FILTER_COLORS[f] ? FILTER_COLORS[f] : ''}>
               {f === 'Live' ? (
                 <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#06FFA5] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
                   Live
                 </span>
               ) : f}

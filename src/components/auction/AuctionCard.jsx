@@ -3,20 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
+import { useCountdown } from '@/hooks/useCountdown'
 
 const STATUS_COLORS = {
-  Live:      { badge: 'bg-[rgba(6,255,165,0.12)] border-[rgba(6,255,165,0.3)] text-[#06FFA5]', dot: 'bg-[#06FFA5]', timer: '#06FFA5' },
-  Revealing: { badge: 'bg-[rgba(255,165,0,0.12)] border-[rgba(255,165,0,0.3)] text-[#FFA500]', dot: 'bg-[#FFA500]', timer: '#FFA500' },
+  Live:      { badge: 'bg-[rgba(29,158,117,0.12)] border-[rgba(29,158,117,0.3)] text-[var(--success)]', dot: 'bg-[var(--success)]', timer: 'var(--success)' },
+  Revealing: { badge: 'bg-[rgba(217,119,6,0.12)] border-[rgba(217,119,6,0.3)] text-[var(--warning)]', dot: 'bg-[var(--warning)]', timer: 'var(--warning)' },
   Ended:     { badge: 'bg-[rgba(139,143,168,0.12)] border-[rgba(139,143,168,0.2)] text-[#8B8FA8]', dot: 'bg-[#8B8FA8]', timer: '#8B8FA8' },
   Upcoming:  { badge: 'bg-[rgba(167,139,250,0.12)] border-[rgba(167,139,250,0.3)] text-[#A78BFA]', dot: 'bg-[#A78BFA]', timer: '#A78BFA' },
 }
 
 function ProgressBar({ value, max, status }) {
   const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0
-  const color = status === 'Live' ? '#06FFA5' : status === 'Revealing' ? '#FFA500' : '#4A5060'
+  const color = status === 'Live' ? 'var(--success)' : status === 'Revealing' ? 'var(--warning)' : '#4A5060'
 
   return (
-    <div className="w-full h-1.5 rounded-full bg-[var(--bg-overlay)] overflow-hidden">
+    <div className="w-full h-2 rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${pct}%` }}
@@ -27,8 +28,9 @@ function ProgressBar({ value, max, status }) {
   )
 }
 
-export function AuctionCard({ id, name, symbol, reserve, time, bids, status = 'Live', isLive }) {
-  const resolvedStatus = isLive ? 'Live' : status
+export function AuctionCard({ id, name, symbol, reserve, endTimestamp, bids, status = 'Live', isLive }) {
+  const { timeLeftStr, isEnded } = useCountdown(endTimestamp)
+  const resolvedStatus = (isLive && isEnded) ? 'Ended' : isLive ? 'Live' : status
   const colors = STATUS_COLORS[resolvedStatus] || STATUS_COLORS.Ended
   const maxBids = 30
 
@@ -46,7 +48,7 @@ export function AuctionCard({ id, name, symbol, reserve, time, bids, status = 'L
           <span className="font-display text-base font-bold text-white leading-tight block">{name}</span>
           <span className="font-mono text-xs text-[var(--text-muted)] mt-0.5 block">{symbol}</span>
         </div>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold tracking-wider shrink-0 animate-pulse-badge ${colors.badge}`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold tracking-wider shrink-0 ${resolvedStatus === 'Live' ? 'animate-pulse-badge' : ''} ${colors.badge}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`} />
           {resolvedStatus.toUpperCase()}
         </div>
@@ -61,7 +63,7 @@ export function AuctionCard({ id, name, symbol, reserve, time, bids, status = 'L
         <div className="text-right">
           <span className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-semibold block mb-1">Time Left</span>
           <span className="font-mono text-sm font-bold" style={{ color: colors.timer }}>
-            {time === 'Ended' ? 'Closed' : time}
+            {resolvedStatus === 'Ended' ? 'Closed' : resolvedStatus === 'Revealing' ? '00:00' : timeLeftStr}
           </span>
         </div>
       </div>

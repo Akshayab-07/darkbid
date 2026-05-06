@@ -13,6 +13,7 @@ use instructions::commit_bid::*;
 use instructions::reveal_bid::*;
 use instructions::finalize_auction::*;
 use instructions::refund::*;
+use instructions::claim_token::*;
 
 declare_id!("7YWfupxWKmgekRxzrWUUgoWEGSoGS2kz9nyaEbzKHqFK");
 
@@ -20,8 +21,8 @@ declare_id!("7YWfupxWKmgekRxzrWUUgoWEGSoGS2kz9nyaEbzKHqFK");
 pub mod darkbid {
     use super::*;
 
-    pub fn initialize_auction(ctx: Context<InitializeAuction>, reserve_price: u64, duration: i64) -> Result<()> {
-        instructions::initialize_auction::handler(ctx, reserve_price, duration)
+    pub fn initialize_auction(ctx: Context<InitializeAuction>, reserve_price: u64, duration: i64, token_supply: u64) -> Result<()> {
+        instructions::initialize_auction::handler(ctx, reserve_price, duration, token_supply)
     }
 
     pub fn commit_bid(ctx: Context<CommitBid>, hash: [u8; 32], amount: u64) -> Result<()> {
@@ -38,5 +39,9 @@ pub mod darkbid {
 
     pub fn refund(ctx: Context<Refund>) -> Result<()> {
         instructions::refund::handler(ctx)
+    }
+
+    pub fn claim_token(ctx: Context<ClaimToken>) -> Result<()> {
+        instructions::claim_token::handler(ctx)
     }
 }

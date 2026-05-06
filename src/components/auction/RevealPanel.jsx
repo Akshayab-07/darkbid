@@ -151,10 +151,10 @@ export function RevealPanel({ onReveal, sealedHash = '0x4f3a...8c2d' }) {
               {matchStatus === 'match' && (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                  className="bg-[#10b981]/10 border border-[#10b981]/20 rounded-xl p-4 flex items-center gap-4 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  className="bg-[var(--success)]/10 border border-[var(--success)]/20 rounded-xl p-4 flex items-center gap-4 shadow-[0_0_15px_rgba(29,158,117,0.1)]"
                 >
-                  <CheckCircle2 className="text-[#10b981] w-5 h-5" />
-                  <span className="text-base font-medium text-[#10b981] tracking-wide">Matches! Ready to reveal</span>
+                  <CheckCircle2 className="text-[var(--success)] w-5 h-5" />
+                  <span className="text-base font-medium text-[var(--success)] tracking-wide">Matches! Ready to reveal</span>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -14,4 +14,10 @@ pub enum DarkBidError {
     AlreadyFinalized,
     #[msg("Not the winner")]
     NotWinner,
+    #[msg("Auction not finalized")]
+    AuctionNotFinalized,
+    #[msg("Tokens already claimed")]
+    AlreadyClaimed,
+    #[msg("Invalid token account")]
+    InvalidTokenAccount,
 }
