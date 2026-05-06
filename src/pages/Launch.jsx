@@ -72,7 +72,7 @@ export default function Launch() {
                   onChange={e => setFormData({...formData, reserve: e.target.value})}
                   className="bg-bg-elevated border-border-default focus-visible:ring-violet-500 pr-16 font-mono"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted font-medium text-sm">USDC</span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted font-medium text-sm">SOL</span>
               </div>
             </div>
 

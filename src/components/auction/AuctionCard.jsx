@@ -21,7 +21,7 @@ export function AuctionCard({ id, name, symbol, reserve, time, bids, isLive }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-xs text-text-muted uppercase tracking-wider">Reserve</span>
-          <span className="font-mono text-text-primary font-medium">{reserve} USDC</span>
+          <span className="font-mono text-text-primary font-medium">{reserve} SOL</span>
         </div>
         <div className="flex flex-col gap-1 items-end">
           <span className="text-xs text-text-muted uppercase tracking-wider">Time Left</span>

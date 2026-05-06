@@ -6,9 +6,9 @@ export default function Dashboard() {
   const [filter, setFilter] = useState("Live")
 
   const auctions = [
-    { id: "1", name: "PhantomToken", symbol: "$PHNTM", reserve: "100.00", time: "00:45", bids: "21", status: "Live" },
-    { id: "2", name: "ZeroCoin", symbol: "$ZERO", reserve: "50.00", time: "02:15", bids: "14", status: "Live" },
-    { id: "3", name: "Eclipse", symbol: "$ECL", reserve: "500.00", time: "14:00", bids: "5", status: "Live" },
+    { id: "1", name: "PhantomToken", symbol: "$PHNTM", reserve: "1", time: "00:45", bids: "21", status: "Live" },
+    { id: "2", name: "ZeroCoin", symbol: "$ZERO", reserve: "2", time: "02:15", bids: "14", status: "Live" },
+    { id: "3", name: "Eclipse", symbol: "$ECL", reserve: "3", time: "14:00", bids: "5", status: "Live" },
     { id: "4", name: "Nebula", symbol: "$NBLA", reserve: "25.00", time: "24:00", bids: "0", status: "Upcoming" },
     { id: "5", name: "Axiom", symbol: "$AX", reserve: "150.00", time: "72:00", bids: "0", status: "Upcoming" },
     { id: "6", name: "Stardust", symbol: "$DUST", reserve: "10.00", time: "Ended", bids: "145", status: "Ended" },

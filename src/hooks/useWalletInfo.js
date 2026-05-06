@@ -2,7 +2,8 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { useState, useEffect } from 'react'
 
-export function useWalletInfo() {
+// ✅ Optionally pass a refreshTrigger to force balance refetch after transactions
+export function useWalletInfo(refreshTrigger = 0) {
   const { publicKey, connected } = useWallet()
   const { connection } = useConnection()
   const [balance, setBalance] = useState(0)
@@ -22,12 +23,14 @@ export function useWalletInfo() {
       .getBalance(publicKey)
       .then(lamports => {
         // Solana uses "lamports" — 1 SOL = 1,000,000,000 lamports
-        setBalance(lamports / LAMPORTS_PER_SOL)
+        const solBalance = lamports / LAMPORTS_PER_SOL
+        console.log('💰 Wallet balance updated:', solBalance.toFixed(4), 'SOL')
+        setBalance(solBalance)
       })
       .catch(err => console.error('Balance fetch failed:', err))
       .finally(() => setLoading(false))
 
-  }, [publicKey, connected, connection])
+  }, [publicKey, connected, connection, refreshTrigger])
 
   return {
     address: publicKey?.toString() ?? null,

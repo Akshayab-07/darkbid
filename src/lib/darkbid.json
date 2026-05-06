@@ -1,68 +1,92 @@
 {
-  "version": "0.1.0",
+  "address": "7YWfupxWKmgekRxzrWUUgoWEGSoGS2kz9nyaEbzKHqFK",
   "name": "darkbid",
+  "version": "0.1.0",
+  "spec": "0.1.0",
+  "metadata": {
+    "description": "Created with Anchor"
+  },
   "instructions": [
     {
-      "name": "createAuction",
-      "accounts": [
-        {
-          "name": "auction",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+      "name": "commit_bid",
+      "discriminator": [
+        149,
+        237,
+        198,
+        113,
+        53,
+        66,
+        70,
+        76
       ],
-      "args": [
-        {
-          "name": "reservePrice",
-          "type": "u64"
-        },
-        {
-          "name": "durationSeconds",
-          "type": "i64"
-        },
-        {
-          "name": "revealDurationSeconds",
-          "type": "i64"
-        }
-      ]
-    },
-    {
-      "name": "commitBid",
       "accounts": [
         {
-          "name": "auction",
-          "isMut": true,
-          "isSigner": false
+          "name": "auction"
         },
         {
           "name": "bid",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
         },
         {
           "name": "bidder",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "hashedBid",
+          "name": "hash",
           "type": {
             "array": [
               "u8",
@@ -71,28 +95,254 @@
           }
         },
         {
-          "name": "bidAmount",
+          "name": "amount",
           "type": "u64"
         }
       ]
     },
     {
-      "name": "revealBid",
+      "name": "finalize_auction",
+      "discriminator": [
+        220,
+        209,
+        175,
+        193,
+        57,
+        132,
+        241,
+        168
+      ],
       "accounts": [
         {
           "name": "auction",
-          "isMut": false,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "winner_bid",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "winner_bid.bidder",
+                "account": "Bid"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_auction",
+      "discriminator": [
+        37,
+        10,
+        117,
+        197,
+        208,
+        88,
+        117,
+        62
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "reserve_price",
+          "type": "u64"
+        },
+        {
+          "name": "duration",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "refund",
+      "discriminator": [
+        2,
+        96,
+        183,
+        251,
+        63,
+        208,
+        46,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "auction"
         },
         {
           "name": "bid",
-          "isMut": true,
-          "isSigner": false
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
         },
         {
           "name": "bidder",
-          "isMut": false,
-          "isSigner": true
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reveal_bid",
+      "discriminator": [
+        48,
+        73,
+        28,
+        255,
+        202,
+        126,
+        236,
+        196
+      ],
+      "accounts": [
+        {
+          "name": "auction"
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder",
+          "signer": true
         }
       ],
       "args": [
@@ -101,144 +351,38 @@
           "type": "u64"
         },
         {
-          "name": "nonce",
+          "name": "secret",
           "type": "u64"
         }
       ]
-    },
-    {
-      "name": "settleAuction",
-      "accounts": [
-        {
-          "name": "auction",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": []
     }
   ],
   "accounts": [
     {
       "name": "Auction",
-      "fields": [
-        {
-          "name": "authority",
-          "type": "publicKey"
-        },
-        {
-          "name": "tokenMint",
-          "type": "publicKey"
-        },
-        {
-          "name": "reservePrice",
-          "type": "u64"
-        },
-        {
-          "name": "endTime",
-          "type": "i64"
-        },
-        {
-          "name": "revealEndTime",
-          "type": "i64"
-        },
-        {
-          "name": "bidCount",
-          "type": "u32"
-        },
-        {
-          "name": "revealCount",
-          "type": "u32"
-        },
-        {
-          "name": "status",
-          "type": {
-            "defined": "AuctionStatus"
-          }
-        },
-        {
-          "name": "winner",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
-          "name": "winningBid",
-          "type": "u64"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        }
+      "discriminator": [
+        218,
+        94,
+        247,
+        242,
+        126,
+        233,
+        131,
+        81
       ]
     },
     {
       "name": "Bid",
-      "fields": [
-        {
-          "name": "auction",
-          "type": "publicKey"
-        },
-        {
-          "name": "bidder",
-          "type": "publicKey"
-        },
-        {
-          "name": "hashedBid",
-          "type": {
-            "array": [
-              "u8",
-              32
-            ]
-          }
-        },
-        {
-          "name": "revealedAmount",
-          "type": "u64"
-        },
-        {
-          "name": "isRevealed",
-          "type": "bool"
-        },
-        {
-          "name": "isWinner",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        }
+      "discriminator": [
+        143,
+        246,
+        48,
+        245,
+        42,
+        145,
+        180,
+        88
       ]
-    }
-  ],
-  "types": [
-    {
-      "name": "AuctionStatus",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Active"
-          },
-          {
-            "name": "Revealing"
-          },
-          {
-            "name": "Settling"
-          },
-          {
-            "name": "Completed"
-          },
-          {
-            "name": "Cancelled"
-          }
-        ]
-      }
     }
   ],
   "errors": [
@@ -249,28 +393,97 @@
     },
     {
       "code": 6001,
-      "name": "AuctionNotActive",
-      "msg": "Auction is not active"
+      "name": "AuctionNotEnded",
+      "msg": "Auction has not ended yet"
     },
     {
       "code": 6002,
-      "name": "BidBelowReserve",
-      "msg": "Bid is below the reserve price"
+      "name": "InvalidHash",
+      "msg": "Bid hash does not match"
     },
     {
       "code": 6003,
-      "name": "RevealTooEarly",
-      "msg": "Reveal phase has not started yet"
+      "name": "BelowReservePrice",
+      "msg": "Bid is below reserve price"
     },
     {
       "code": 6004,
-      "name": "InvalidReveal",
-      "msg": "Reveal does not match original bid"
+      "name": "AlreadyFinalized",
+      "msg": "Auction already finalized"
     },
     {
       "code": 6005,
-      "name": "AuctionCancelled",
-      "msg": "Auction has been cancelled"
+      "name": "NotWinner",
+      "msg": "Not the winner"
+    }
+  ],
+  "types": [
+    {
+      "name": "Auction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_price",
+            "type": "u64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_finalized",
+            "type": "bool"
+          },
+          {
+            "name": "winner",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_revealed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
     }
   ]
 }

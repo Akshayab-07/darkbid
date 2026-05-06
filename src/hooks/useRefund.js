@@ -3,19 +3,16 @@ import { PublicKey } from '@solana/web3.js'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { useState } from 'react'
 import idl from '../lib/darkbid.json'
-import { ON_CHAIN_AUCTION } from '../lib/constants'
 
-const PROGRAM_ID = new PublicKey(ON_CHAIN_AUCTION.PROGRAM_ID)
-// ✅ Use the real deployed auction PDA (hardcoded)
-const AUCTION_PDA = new PublicKey(ON_CHAIN_AUCTION.PDA)
+const PROGRAM_ID = new PublicKey('7YWfupxWKmgekRxzrWUUgoWEGSoGS2kz9nyaEbzKHqFK')
 
-export function useRevealBid() {
+export function useRefund() {
   const wallet = useWallet()
   const { connection } = useConnection()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const revealBid = async (auctionCreatorPublicKey, bidAmountSOL, secret) => {
+  const claimRefund = async (auctionCreatorPublicKey) => {
     if (!wallet.connected) {
       throw new Error('Wallet not connected')
     }
@@ -28,9 +25,7 @@ export function useRevealBid() {
     setError(null)
 
     try {
-      console.log('🔄 Revealing bid...')
-      console.log('  - Amount:', bidAmountSOL, 'SOL')
-      console.log('  - Secret:', secret)
+      console.log('🔄 Claiming refund...')
 
       const provider = new AnchorProvider(
         connection,
@@ -39,34 +34,44 @@ export function useRevealBid() {
       )
       const program = new Program(idl, PROGRAM_ID, provider)
 
-      const lamports = Math.floor(bidAmountSOL * 1_000_000_000)
+      const auctionCreator = new PublicKey(auctionCreatorPublicKey)
 
-      // ✅ Use the real deployed auction PDA (hardcoded)
-      console.log('✅ Using on-chain auction PDA:', AUCTION_PDA.toString())
+      const [auctionPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from('auction'), auctionCreator.toBuffer()],
+        PROGRAM_ID
+      )
+      console.log('📍 Auction PDA:', auctionPDA.toString())
 
       const [bidPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from('bid'), AUCTION_PDA.toBuffer(), wallet.publicKey.toBuffer()],
+        [Buffer.from('bid'), auctionPDA.toBuffer(), wallet.publicKey.toBuffer()],
         PROGRAM_ID
       )
       console.log('📍 Bid PDA:', bidPDA.toString())
 
-      console.log('📤 Submitting reveal transaction...')
+      const [escrowPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from('escrow'), auctionPDA.toBuffer(), wallet.publicKey.toBuffer()],
+        PROGRAM_ID
+      )
+      console.log('📍 Escrow PDA:', escrowPDA.toString())
+
+      console.log('📤 Submitting refund transaction...')
       const tx = await program.methods
-        .revealBid(lamports, BigInt(secret))
+        .refund()
         .accounts({
-          auction: AUCTION_PDA,
+          auction: auctionPDA,
           bid: bidPDA,
+          escrow: escrowPDA,
           bidder: wallet.publicKey,
         })
         .rpc()
 
-      console.log('✅ Reveal successful!')
+      console.log('✅ Refund successful!')
       console.log('  TX:', tx)
 
       return { tx }
     } catch (err) {
       const errorMsg = err?.message || err?.toString() || 'Unknown error'
-      console.error('❌ revealBid failed:', errorMsg)
+      console.error('❌ claimRefund failed:', errorMsg)
       setError(errorMsg)
       throw err
     } finally {
@@ -74,5 +79,5 @@ export function useRevealBid() {
     }
   }
 
-  return { revealBid, loading, error }
+  return { claimRefund, loading, error }
 }

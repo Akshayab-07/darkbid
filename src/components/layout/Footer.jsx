@@ -1,3 +1,4 @@
+// ✅ GitHub link with inline SVG (no lucide import needed)
 export function Footer() {
   return (
     <footer className="border-t border-border-subtle bg-bg-base py-8">

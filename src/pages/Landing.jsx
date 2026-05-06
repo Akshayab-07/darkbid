@@ -101,9 +101,9 @@ export default function Landing() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-           <AuctionCard id="1" name="PhantomToken" symbol="$PHNTM" reserve="100.00" time="00:45" bids="21" isLive={true} />
-           <AuctionCard id="2" name="ZeroCoin" symbol="$ZERO" reserve="50.00" time="02:15" bids="14" isLive={true} />
-           <AuctionCard id="3" name="Eclipse" symbol="$ECL" reserve="500.00" time="14:00" bids="5" isLive={true} />
+           <AuctionCard id="1" name="PhantomToken" symbol="$PHNTM" reserve="1" time="00:45" bids="21" isLive={true} />
+           <AuctionCard id="2" name="ZeroCoin" symbol="$ZERO" reserve="2" time="02:15" bids="14" isLive={true} />
+           <AuctionCard id="3" name="Eclipse" symbol="$ECL" reserve="3" time="14:00" bids="5" isLive={true} />
         </div>
       </section>
     </PageTransition>

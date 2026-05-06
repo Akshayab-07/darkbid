@@ -7,12 +7,16 @@ import { BidForm } from "@/components/auction/BidForm"
 import { RevealPanel } from "@/components/auction/RevealPanel"
 import { WinnerPanel } from "@/components/auction/WinnerPanel"
 import { ActivityFeed } from "@/components/auction/ActivityFeed"
-import { AUCTION_STATES } from "@/lib/constants"
+import { AUCTION_STATES, ON_CHAIN_AUCTION } from "@/lib/constants"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function Auction() {
   const { id } = useParams()
-  const reserve = 50.00
+  const reserve = parseFloat(id) || ON_CHAIN_AUCTION.RESERVE_PRICE_SOL
+  
+  // ✅ Use the real on-chain authority (creator) from constants
+  const testAuctioneerAddress = ON_CHAIN_AUCTION.AUTHORITY
+  
   const { state, timeLeft, bids, revealed, isWinner, totalDuration, placeBid } = useAuction(45)
 
   return (
@@ -23,7 +27,7 @@ export default function Auction() {
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 shadow-glow-v"></div>
           <h2 className="font-bold text-lg text-text-primary">DARKTOKEN <span className="text-text-muted font-normal ml-2">$DRK</span></h2>
           <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-bg-elevated border border-border-default ml-auto">
-            <span className="font-mono text-xs text-text-muted">{`0x8a9B...${id || '9f2C'}`}</span>
+            <span className="font-mono text-xs text-text-muted">{`${testAuctioneerAddress.slice(0, 6)}...${testAuctioneerAddress.slice(-4)}`}</span>
           </div>
         </div>
       </div>
@@ -64,11 +68,11 @@ export default function Auction() {
                 <div className="grid grid-cols-2 gap-8 mb-12 border-b border-border-subtle pb-8">
                   <div className="flex flex-col gap-1">
                     <span className="text-sm text-text-muted tracking-wider uppercase">Reserve Price</span>
-                    <span className="font-mono text-2xl font-bold">◎ {reserve} USDC</span>
+                    <span className="font-mono text-2xl font-bold">◎ {reserve} SOL</span>
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="text-sm text-text-muted tracking-wider uppercase">Min Bid</span>
-                    <span className="font-mono text-xl text-text-secondary">◎ {reserve} USDC</span>
+                    <span className="font-mono text-xl text-text-secondary">◎ {reserve} SOL</span>
                   </div>
                 </div>
 
@@ -102,7 +106,12 @@ export default function Auction() {
                 <AnimatePresence mode="wait">
                   {state === AUCTION_STATES.BIDDING ? (
                     <motion.div key="form" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                      <BidForm reserve={reserve} onBid={placeBid} />
+                      <BidForm 
+                        reservePrice={reserve} 
+                        auctionId={id}
+                        auctionCreatorAddress={testAuctioneerAddress}
+                        onBid={placeBid} 
+                      />
                     </motion.div>
                   ) : (
                     <motion.div key="reveal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
